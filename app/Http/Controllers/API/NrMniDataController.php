@@ -274,7 +274,7 @@ class NrMniDataController extends Controller
 
     // ======ADMIN FUNCTION FOR USER===
 
-    public function index()
+    public function index() 
     {
         $NrMniDataUploaded = NrMniData::with('user')->get();
       return response()->json($NrMniDataUploaded);
