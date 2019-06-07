@@ -22,7 +22,7 @@ class NrMniDataController extends Controller
             // $minplus = $min + '1'; 
             $NrMniData = NrMniData::inRandomOrder('status_call','=',1)
                                             ->where(function($query){
-                                               $datafdisp = array('0','03','05','06','07','08','09','10','11','12','13','17','18','96','97','98','99');
+                                               $datafdisp = array('0','03','08','11','12','13','17','18','96','97','98');
                                                 $Setting = Setting::where('id',1)->first();
                                                 $numberCalls = $Setting['calls_set'];
                                                 $callname = $Setting['filenameId'];
@@ -37,7 +37,7 @@ class NrMniDataController extends Controller
               {
                 $NrMniData = NrMniData::inRandomOrder('status_call','=',1)
                                       ->where(function($query){
-                                        $datafdisp = array('0','03','05','06','07','08','09','10','11','12','13','17','18','96','97','98','99');
+                                        $datafdisp = array('0','03','08','11','12','13','17','18','96','97','98');
                                         $Setting = Setting::where('id',1)->first();
                                         $numberCalls = $Setting['calls_set'];
                                         $callname = $Setting['filenameId'];
@@ -294,7 +294,8 @@ class NrMniDataController extends Controller
    public function getDelivered() {
      $NrMniData = NrMniDataDuplicate::where('diliver_status','=','delivered')
                                             ->orderBy('created_at', 'desc')
-                                            ->get();
+                                            ->get()
+                                            ->unique('nr_mni_data_id');
 
      return response()->json($NrMniData);
    }
