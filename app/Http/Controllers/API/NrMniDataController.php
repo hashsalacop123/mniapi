@@ -13,7 +13,6 @@ use App\User;
 use DB;
 class NrMniDataController extends Controller
 {
-
     // ======FRONT END FOR USER===
       // START CALL API ALGO
     public function startCall(Request $request)
@@ -21,50 +20,28 @@ class NrMniDataController extends Controller
             $user = auth('api')->user();
             // $minplus = $min + '1'; 
             $NrMniData = NrMniData::inRandomOrder('status_call','=',1)
-                                            ->where(function($query){
-                                               $datafdisp = array('0','03','08','11','12','13','17','18','96','97','98');
-                                                $Setting = Setting::where('id',1)->first();
-                                                $numberCalls = $Setting['calls_set'];
-                                                $callname = $Setting['filenameId'];
-                           
-                                                $query->where('callPriority','=',$numberCalls)
-                                                      ->whereIn('fdisp',$datafdisp)
-                                                      ->where('filesName','=',$callname)
-                                                      ->where('status_call','=',01);
+                                        ->where(function($query){
+                                           $datafdisp = array('0','03','08','11','12','13','17','18','96','97','98');
+                                            $Setting = Setting::where('id',1)->first();
+                                            $numberCalls = $Setting['calls_set'];
+                                            $callname = $Setting['filenameId'];
+                       
+                                            $query->where('callPriority','=',$numberCalls)
+                                                  ->whereIn('fdisp',$datafdisp)
+                                                  ->where('filesName','=',$callname)
+                                                  ->where('status_call','=',01);
                                              })->first();
-
-           if (!$NrMniData)
-              {
-                $NrMniData = NrMniData::inRandomOrder('status_call','=',1)
-                                      ->where(function($query){
-                                        $datafdisp = array('0','03','08','11','12','13','17','18','96','97','98');
-                                        $Setting = Setting::where('id',1)->first();
-                                        $numberCalls = $Setting['calls_set'];
-                                        $callname = $Setting['filenameId'];
-                                        $query->where('status_call','=',01)
-                                               ->where('callPriority','=',$numberCalls)
-                                               ->where('filesName','=',$callname)
-                                               ->whereIn('fdisp',$datafdisp);
-                                  })->first();
-                       if(!$NrMniData){
-                         return response()->json('queCall');
-                       }                 
-                    $status_call = '2';
-                    $userId = $user['id'];
-                    $statusupdate = NrMniData::where('id',$NrMniData['id'])->first();
-                    $statusupdate->status_call = $status_call;
-                    $statusupdate->user_id = $userId;
-                    $statusupdate->save();
-                    return response()->json($NrMniData['id']);
-                }
-            $userId = $user['id'];
-            $status_call = '2';
-            $statusupdate = NrMniData::where('id',$NrMniData['id'])->first();
-            $statusupdate->status_call = $status_call;
-            $statusupdate->user_id = $userId;
-            $statusupdate->save();
-
-            return response()->json($NrMniData['id']);
+                        if(!$NrMniData) {
+                             return response()->json('queCall');;
+                        }else {
+                            $userId = $user['id'];
+                            $status_call = '2';
+                            $statusupdate = NrMniData::where('id',$NrMniData['id'])->first();
+                            $statusupdate->status_call = $status_call;
+                            $statusupdate->user_id = $userId;
+                            $statusupdate->save();
+                            return response()->json($NrMniData['id']);
+                        }
           } 
   
     public function updateDuplicate(Request $request) {
@@ -254,10 +231,10 @@ class NrMniDataController extends Controller
                         
                     ]); 
                 $nrDataDuplicate->save();
-                $status = '1';
                 $userStatus = NULL;
                 $dataId = $nrDataDuplicate['nr_mni_data_id'];
                 $dataCount = NrMniData::where('id',$dataId)->first();
+                $status = '1';
                 $priority = $dataCount['callPriority'] + '1';
                 $callPriority = $priority;
                 $dataCount->fdisp = $result;
@@ -271,7 +248,30 @@ class NrMniDataController extends Controller
                 $countCall = NrMniDataDuplicate::where('nr_mni_data_id',$nrDataDuplicate->nr_mni_data_id)->count();
               return response()->json( array( 'dataupdated' => $nrDataDuplicate , 'countcall' => $countCall ));
     }
+    //Check Status If Taking Calls
+    public function updateStatusCalls(Request $request){
 
+            $dataId = $request->input('nr_mni_data_id');
+            $dataCount = NrMniData::where('id',$dataId)->first(); 
+            $callstatus = $dataCount['status_call'];
+
+            $validators = Validator::make($request->all(),[
+                 'nr_mni_data_id' => 'required | exists:nr_mni_datas,id'
+                ]); 
+
+             if ($validators->fails()) {
+                return response('error');
+            } 
+        
+              if($callstatus == '2') {
+                    $statusOne = '1';
+                    $dataCount->status_call = $statusOne;
+                    $dataCount->save();
+                    return response()->json($dataCount['status_call']);
+               }else{
+                    return response()->json('correct');
+               }
+    }
     // ======ADMIN FUNCTION FOR USER===
 
     public function index() 

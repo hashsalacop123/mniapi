@@ -17,8 +17,6 @@
 //     return $request->user();
 // });
 
-
-
 Route::group(['prefix' => 'auth'], function () {
 
 	    Route::post('login', 'API\UserController@login');
@@ -37,7 +35,7 @@ Route::group(['prefix' => 'auth'], function () {
     // NrMniDataController
       Route::post('startcall','API\NrMniDataController@startCall');
       Route::post('duplicate/', 'API\NrMniDataController@updateDuplicate');
-
+      Route::put('statusupdate', 'API\NrMniDataController@updateStatusCalls');
     // ADDMIN ROUTE
         Route::post('importdata', 'API\ImportExcelController@importCsv');
         Route::get('alluser', 'API\UserController@getAllUser');
