@@ -58,6 +58,9 @@ Route::group(['prefix' => 'auth'], function () {
         Route::get('getsets/','API\NrMniDataController@getsets');
         Route::get('uploadnames/','API\NrMniDataController@collectUploadedName');
         Route::get('duplicatestatus/','API\NrMniDataController@nrmnidataDuplicateStatus');
+
+
+        Route::put('delivered2','API\NrMniDataController@deliveredStatus2');
    });
 
 });

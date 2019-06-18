@@ -53,7 +53,7 @@ class NrMniDataController extends Controller
                      if ($validators->fails()) {
                         return response('error');
                     } 
-                    $draftdata = 'Draft';
+                    $draftdata = '';
                     $nrDataDuplicate = new NrMniDataDuplicate([ 
                         'user_id'=> $request->get('userid'), 
                         'nr_mni_data_id'=> $request->get('nrdataidhide'), 
@@ -320,20 +320,33 @@ class NrMniDataController extends Controller
     return response()->json($getAll);
   } 
 
-  public function deliverStatus(Request $request) {
+  // public function deliverStatus(Request $request) {
 
-           $deliver_status = $request->input('diliver_status');
-           $nr_mni_data_id = $request->input('nr_mni_data_id');
-           $deliverid = $request->input('id');
-           $getAll =  NrMniDataDuplicate::where('nr_mni_data_id', $nr_mni_data_id)->get();
+  //          $deliver_status = $request->input('diliver_status');
+  //          $nr_mni_data_id = $request->input('nr_mni_data_id');
+  //          $deliverid = $request->input('id');
+  //          $getAll =  NrMniDataDuplicate::where('nr_mni_data_id', $nr_mni_data_id)->get();
 
-          foreach ($getAll as $key => $getAlls) {
-              $getAlls->diliver_status = $deliver_status;
-              $getAlls->save();
-          }
+  //         foreach ($getAll as $key => $getAlls) {
+  //             $getAlls->diliver_status = $deliver_status;
+  //             $getAlls->save();
+  //         }
 
-          return response()->json($getAll);
-    }
+  //         return response()->json($getAll);
+  //   }
+  
+
+  public function deliveredStatus2() {
+
+    $allDatas = NrMniDataDuplicate::all();
+    $deliver_status = 'delivered';
+    foreach ($allDatas as $key => $allData) {
+              $allData->diliver_status = $deliver_status;
+              $allData->save();
+      }
+
+    return response()->json($allData);
+  }
 
   public function uploaded()
     {
