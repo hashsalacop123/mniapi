@@ -21,7 +21,7 @@ class NrMniDataController extends Controller
             // $minplus = $min + '1'; 
             $NrMniData = NrMniData::inRandomOrder('status_call','=',1)
                                         ->where(function($query){
-                                           $datafdisp = array('0','03','08','11','12','13','17','18','96','97','98');
+                                           $datafdisp = array('0','11','12','13','09','17','18','96','97');
                                             $Setting = Setting::where('id',1)->first();
                                             $numberCalls = $Setting['calls_set'];
                                             $callname = $Setting['filenameId'];
