@@ -14,7 +14,7 @@ use DB;
 class NrMniDataController extends Controller
 {
     // ======FRONT END FOR USER===
-      // START CALL API ALGO
+      // START CALL API ALGO 
     public function startCall(Request $request)
           {
             $user = auth('api')->user();
