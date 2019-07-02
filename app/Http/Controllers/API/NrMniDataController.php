@@ -25,9 +25,10 @@ class NrMniDataController extends Controller
                                             $Setting = Setting::where('id',1)->first();
                                             $numberCalls = $Setting['calls_set'];
                                             $callname = $Setting['filenameId'];
-                       
+                                               // ->where('vnumber','=','8123730021')
                                             $query->where('callPriority','=',$numberCalls)
                                                   ->whereIn('fdisp',$datafdisp)
+                                               //   ->where('vnumber','=','8123730021')
                                                   ->where('filesName','=',$callname)
                                                   ->where('status_call','=',01);
                                              })->first();
@@ -274,9 +275,20 @@ class NrMniDataController extends Controller
     }
     // ======ADMIN FUNCTION FOR USER===
 
+    public function duplicateAllindex() {
+        $alldatanrMniData = NrMniDataDuplicate::chunk(10000, function($datas){  
+                                         echo $datas;
+                                         die; 
+                                        });
+
+        return response()->json($alldatanrMniData);
+    }
     public function index() 
     {
-        $NrMniDataUploaded = NrMniData::with('user')->get();
+        $NrMniDataUploaded = NrMniData::with('user')->chunk(10000, function($datas){  
+                                         echo $datas;
+                                         die; 
+                                        });
       return response()->json($NrMniDataUploaded);
 
     }
@@ -286,17 +298,20 @@ class NrMniDataController extends Controller
       $NrMniData = NrMniDataDuplicate::where('diliver_status','=','pending')
                                 ->orderBy('created_at', 'desc')
                                 ->distinct('nr_mni_data_id')
-                                ->get()
-                                ->unique('nr_mni_data_id');
+                                  ->chunk(1000, function($data){ 
+                                         echo $data->unique('nr_mni_data_id');
+                                         die;
+                                    });
         return response()->json($NrMniData);
     }
 
    public function getDelivered() {
      $NrMniData = NrMniDataDuplicate::where('diliver_status','=','delivered')
                                             ->orderBy('created_at', 'desc')
-                                            ->get()
-                                            ->unique('nr_mni_data_id');
-
+                                             ->chunk(10000, function($datas){  
+                                                 echo   $datas->unique('nr_mni_data_id');
+                                                    die;    
+                                              });
      return response()->json($NrMniData);
    }
 
